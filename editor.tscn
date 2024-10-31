@@ -1,0 +1,130 @@
+[gd_scene load_steps=7 format=3 uid="uid://dtnd2tgqy4e0x"]
+
+[ext_resource type="Script" path="res://Editor.cs" id="1_4ma6b"]
+[ext_resource type="PackedScene" uid="uid://ce35tneeeajyd" path="res://scenes/cubemap_texture_button.tscn" id="1_074ld"]
+[ext_resource type="Theme" uid="uid://deiehr6vwymgs" path="res://ui_theme.tres" id="3_rp1yo"]
+[ext_resource type="Theme" uid="uid://dq426vnpqygex" path="res://small_text_theme.tres" id="4_tpm43"]
+
+[sub_resource type="Environment" id="Environment_kdcnx"]
+background_mode = 1
+background_color = Color(0.29219, 0.29219, 0.29219, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_jxkjr"]
+
+[node name="editor" type="MarginContainer" node_paths=PackedStringArray("CubemapTextureButtons", "ExportButton", "PreviewMeshInstance", "LoadTextureDialog", "ExportTextureDialog", "ErrorDialog")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+script = ExtResource("1_4ma6b")
+CubemapTextureButtons = [NodePath("HSplitContainer/AspectRatioContainer/GridContainer/+X"), NodePath("HSplitContainer/AspectRatioContainer/GridContainer/-X"), NodePath("HSplitContainer/AspectRatioContainer/GridContainer/+Y"), NodePath("HSplitContainer/AspectRatioContainer/GridContainer/-Y"), NodePath("HSplitContainer/AspectRatioContainer/GridContainer/+Z"), NodePath("HSplitContainer/AspectRatioContainer/GridContainer/-Z")]
+ExportButton = NodePath("HSplitContainer/VSplitContainer/ExportContainer/ExportButton")
+PreviewMeshInstance = NodePath("HSplitContainer/VSplitContainer/PreviewContainer/SubViewportContainer/SubViewport/MeshInstance3D")
+LoadTextureDialog = NodePath("OpenTextureDialog")
+ExportTextureDialog = NodePath("ExportDialog")
+ErrorDialog = NodePath("ErrorDialog")
+
+[node name="HSplitContainer" type="HSplitContainer" parent="."]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_rp1yo")
+stretch_mode = 0
+
+[node name="GridContainer" type="GridContainer" parent="HSplitContainer/AspectRatioContainer"]
+layout_mode = 2
+columns = 2
+
+[node name="+X" parent="HSplitContainer/AspectRatioContainer/GridContainer" instance=ExtResource("1_074ld")]
+layout_mode = 2
+
+[node name="-X" parent="HSplitContainer/AspectRatioContainer/GridContainer" instance=ExtResource("1_074ld")]
+layout_mode = 2
+TextureKind = 1
+
+[node name="+Y" parent="HSplitContainer/AspectRatioContainer/GridContainer" instance=ExtResource("1_074ld")]
+layout_mode = 2
+TextureKind = 2
+
+[node name="-Y" parent="HSplitContainer/AspectRatioContainer/GridContainer" instance=ExtResource("1_074ld")]
+layout_mode = 2
+TextureKind = 3
+
+[node name="+Z" parent="HSplitContainer/AspectRatioContainer/GridContainer" instance=ExtResource("1_074ld")]
+layout_mode = 2
+TextureKind = 4
+
+[node name="-Z" parent="HSplitContainer/AspectRatioContainer/GridContainer" instance=ExtResource("1_074ld")]
+layout_mode = 2
+TextureKind = 5
+
+[node name="VSplitContainer" type="VSplitContainer" parent="HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PreviewContainer" type="PanelContainer" parent="HSplitContainer/VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 12.34
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="HSplitContainer/VSplitContainer/PreviewContainer"]
+layout_mode = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="HSplitContainer/VSplitContainer/PreviewContainer/SubViewportContainer"]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(562, 578)
+render_target_update_mode = 4
+
+[node name="Camera3D" type="Camera3D" parent="HSplitContainer/VSplitContainer/PreviewContainer/SubViewportContainer/SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.02566)
+environment = SubResource("Environment_kdcnx")
+current = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="HSplitContainer/VSplitContainer/PreviewContainer/SubViewportContainer/SubViewport"]
+mesh = SubResource("SphereMesh_jxkjr")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="HSplitContainer/VSplitContainer/PreviewContainer/SubViewportContainer/SubViewport"]
+transform = Transform3D(0.463482, -0.463846, 0.755004, -1.49012e-08, 0.852047, 0.523466, -0.886107, -0.242617, 0.394908, 0, 0, 0)
+
+[node name="ExportContainer" type="PanelContainer" parent="HSplitContainer/VSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+
+[node name="ExportButton" type="Button" parent="HSplitContainer/VSplitContainer/ExportContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "Export"
+
+[node name="ExportDialog" type="FileDialog" parent="."]
+title = "Export Cubemap Texture"
+initial_position = 4
+size = Vector2i(500, 500)
+theme = ExtResource("4_tpm43")
+ok_button_text = "Export"
+access = 2
+filters = PackedStringArray("*.png")
+
+[node name="OpenTextureDialog" type="FileDialog" parent="."]
+auto_translate_mode = 1
+title = "Open a File"
+initial_position = 4
+size = Vector2i(500, 500)
+theme = ExtResource("4_tpm43")
+ok_button_text = "Open"
+file_mode = 0
+access = 2
+
+[node name="ErrorDialog" type="AcceptDialog" parent="."]
+title = "Error"
+initial_position = 4
+size = Vector2i(200, 100)
