@@ -11,7 +11,7 @@ background_color = Color(0.29219, 0.29219, 0.29219, 1)
 
 [sub_resource type="SphereMesh" id="SphereMesh_jxkjr"]
 
-[node name="editor" type="MarginContainer" node_paths=PackedStringArray("CubemapTextureButtons", "ExportButton", "PreviewMeshInstance", "LoadTextureDialog", "ExportTextureDialog", "ErrorDialog")]
+[node name="editor" type="MarginContainer" node_paths=PackedStringArray("CubemapTextureButtons", "ExportButton", "ResetButton", "FlipXAllButton", "FlipYAllButton", "PreviewMeshInstance", "LoadTextureDialog", "ExportTextureDialog", "ErrorDialog")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -22,8 +22,11 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 script = ExtResource("1_4ma6b")
-CubemapTextureButtons = [NodePath("HSplitContainer/AspectRatioContainer/GridContainer/+X"), NodePath("HSplitContainer/AspectRatioContainer/GridContainer/-X"), NodePath("HSplitContainer/AspectRatioContainer/GridContainer/+Y"), NodePath("HSplitContainer/AspectRatioContainer/GridContainer/-Y"), NodePath("HSplitContainer/AspectRatioContainer/GridContainer/+Z"), NodePath("HSplitContainer/AspectRatioContainer/GridContainer/-Z")]
+CubemapTextureButtons = [NodePath("HSplitContainer/VBoxContainer/AspectRatioContainer/GridContainer/+X"), NodePath("HSplitContainer/VBoxContainer/AspectRatioContainer/GridContainer/-X"), NodePath("HSplitContainer/VBoxContainer/AspectRatioContainer/GridContainer/+Y"), NodePath("HSplitContainer/VBoxContainer/AspectRatioContainer/GridContainer/-Y"), NodePath("HSplitContainer/VBoxContainer/AspectRatioContainer/GridContainer/+Z"), NodePath("HSplitContainer/VBoxContainer/AspectRatioContainer/GridContainer/-Z")]
 ExportButton = NodePath("HSplitContainer/VSplitContainer/ExportContainer/ExportButton")
+ResetButton = NodePath("HSplitContainer/VBoxContainer/HBoxContainer/ResetButton")
+FlipXAllButton = NodePath("HSplitContainer/VBoxContainer/HBoxContainer/FlipAllX")
+FlipYAllButton = NodePath("HSplitContainer/VBoxContainer/HBoxContainer/FlipAllY")
 PreviewMeshInstance = NodePath("HSplitContainer/VSplitContainer/PreviewContainer/SubViewportContainer/SubViewport/MeshInstance3D")
 LoadTextureDialog = NodePath("OpenTextureDialog")
 ExportTextureDialog = NodePath("ExportDialog")
@@ -32,36 +35,64 @@ ErrorDialog = NodePath("ErrorDialog")
 [node name="HSplitContainer" type="HSplitContainer" parent="."]
 layout_mode = 2
 
-[node name="AspectRatioContainer" type="AspectRatioContainer" parent="HSplitContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HSplitContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HSplitContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="ResetButton" type="Button" parent="HSplitContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "Reset"
+
+[node name="VSeparator" type="VSeparator" parent="HSplitContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+
+[node name="FlipAllX" type="Button" parent="HSplitContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "Flip X All"
+
+[node name="FlipAllY" type="Button" parent="HSplitContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "Flip Y All"
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="HSplitContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 theme = ExtResource("3_rp1yo")
 stretch_mode = 0
 
-[node name="GridContainer" type="GridContainer" parent="HSplitContainer/AspectRatioContainer"]
+[node name="GridContainer" type="GridContainer" parent="HSplitContainer/VBoxContainer/AspectRatioContainer"]
 layout_mode = 2
 columns = 2
 
-[node name="+X" parent="HSplitContainer/AspectRatioContainer/GridContainer" instance=ExtResource("1_074ld")]
+[node name="+X" parent="HSplitContainer/VBoxContainer/AspectRatioContainer/GridContainer" instance=ExtResource("1_074ld")]
 layout_mode = 2
 
-[node name="-X" parent="HSplitContainer/AspectRatioContainer/GridContainer" instance=ExtResource("1_074ld")]
+[node name="-X" parent="HSplitContainer/VBoxContainer/AspectRatioContainer/GridContainer" instance=ExtResource("1_074ld")]
 layout_mode = 2
 TextureKind = 1
 
-[node name="+Y" parent="HSplitContainer/AspectRatioContainer/GridContainer" instance=ExtResource("1_074ld")]
+[node name="+Y" parent="HSplitContainer/VBoxContainer/AspectRatioContainer/GridContainer" instance=ExtResource("1_074ld")]
 layout_mode = 2
 TextureKind = 2
 
-[node name="-Y" parent="HSplitContainer/AspectRatioContainer/GridContainer" instance=ExtResource("1_074ld")]
+[node name="-Y" parent="HSplitContainer/VBoxContainer/AspectRatioContainer/GridContainer" instance=ExtResource("1_074ld")]
 layout_mode = 2
 TextureKind = 3
 
-[node name="+Z" parent="HSplitContainer/AspectRatioContainer/GridContainer" instance=ExtResource("1_074ld")]
+[node name="+Z" parent="HSplitContainer/VBoxContainer/AspectRatioContainer/GridContainer" instance=ExtResource("1_074ld")]
 layout_mode = 2
 TextureKind = 4
 
-[node name="-Z" parent="HSplitContainer/AspectRatioContainer/GridContainer" instance=ExtResource("1_074ld")]
+[node name="-Z" parent="HSplitContainer/VBoxContainer/AspectRatioContainer/GridContainer" instance=ExtResource("1_074ld")]
 layout_mode = 2
 TextureKind = 5
 

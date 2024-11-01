@@ -33,7 +33,7 @@ public partial class CubemapTextureButton : Button
 
     [Signal] public delegate void OnTextureChangedEventHandler();
 
-    public Image CubemapImage
+    public Image? CubemapImage
     {
         get => _cubemapImage;
         set
@@ -45,11 +45,11 @@ public partial class CubemapTextureButton : Button
 
     public bool HasImageLoaded { get; protected set; } = false;
 
-    public Texture Texture => _generatedTexture;
+    public Texture? Texture => _generatedTexture;
 
     protected CubemapTexture _textureKind = CubemapTexture.XPos;
-    protected Image _cubemapImage;
-    protected Texture2D _generatedTexture;
+    protected Image? _cubemapImage;
+    protected Texture2D? _generatedTexture;
 
     public override void _Ready()
     {
@@ -62,9 +62,9 @@ public partial class CubemapTextureButton : Button
         FlipYButton.Pressed += FlipY;
     }
 
-    public void SetDimensions(int width, int height)
+    public void SetDimensions(int width, int height, Image.Format format)
     {
-        _cubemapImage = Image.CreateEmpty(width, height, false, Image.Format.Rgba8);
+        _cubemapImage = Image.CreateEmpty(width, height, false, format);
     }
 
     public void CommitImage(Image image)
@@ -76,20 +76,32 @@ public partial class CubemapTextureButton : Button
         FlipYButton.Disabled = false;
     }
 
+    public void Reset()
+    {
+        CubemapImage = null;
+        FlipXButton.Disabled = true;
+        FlipYButton.Disabled = true;
+        HasImageLoaded = false;
+        TextureDisplay.Texture = null;
+    }
+
     public void FlipX()
     {
+        if (CubemapImage == null) return;
         CubemapImage.FlipX();
         regenerateTexturePreview();
     }
 
     public void FlipY()
     {
+        if (CubemapImage == null) return;
         CubemapImage.FlipY();
         regenerateTexturePreview();
     }
 
     protected void regenerateTexturePreview()
     {
+        if (CubemapImage == null) return;
         _generatedTexture = ImageTexture.CreateFromImage(CubemapImage);
         TextureDisplay.Texture = _generatedTexture;
         EmitSignal(SignalName.OnTextureChanged);

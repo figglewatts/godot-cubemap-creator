@@ -11,6 +11,9 @@ public partial class Editor : Control
     [ExportGroup("Views")]
     [Export] public Array<CubemapTextureButton> CubemapTextureButtons { get; set; } = new();
     [Export] public Button ExportButton { get; set; }
+    [Export] public Button ResetButton { get; set; }
+    [Export] public Button FlipXAllButton { get; set; }
+    [Export] public Button FlipYAllButton { get; set; }
     [Export] public MeshInstance3D PreviewMeshInstance { get; set; }
     [Export] public FileDialog LoadTextureDialog { get; set; }
     [Export] public FileDialog ExportTextureDialog { get; set; }
@@ -37,6 +40,23 @@ public partial class Editor : Control
         ExportButton.Pressed += exportCubemap;
         ExportButton.Disabled = true;
 
+        ResetButton.Pressed += onResetButtonPressed;
+
+        FlipXAllButton.Pressed += () =>
+        {
+            foreach (var btn in CubemapTextureButtons)
+            {
+                btn.FlipX();
+            }
+        };
+        FlipYAllButton.Pressed += () =>
+        {
+            foreach (var btn in CubemapTextureButtons)
+            {
+                btn.FlipY();
+            }
+        };
+
         _cubemapPreviewShader = ResourceLoader.Load<Shader>(SHADER_PATH);
         _cubemapPreviewMaterial = new ShaderMaterial { Shader = _cubemapPreviewShader };
         PreviewMeshInstance.SetSurfaceOverrideMaterial(0, _cubemapPreviewMaterial);
@@ -55,7 +75,7 @@ public partial class Editor : Control
             {
                 var image = loadImage(path);
                 textureButton.CommitImage(image);
-                _lastTexturePathUsed = Path.GetDirectoryName(path);
+                _lastTexturePathUsed = Path.GetDirectoryName(path) + Path.DirectorySeparatorChar;
             }
             catch (CubemapLoadImageException e)
             {
@@ -81,10 +101,11 @@ public partial class Editor : Control
         }
         
         var loadedDimensions = new Vector2I(loadedImage.GetWidth(), loadedImage.GetHeight());
+        var loadedFormat = loadedImage.GetFormat();
         if (ImagesCurrentlyLoaded == 0)
         {
             // no images loaded, set the dimensions
-            updateImageDimensions(loadedDimensions);
+            updateImageDimensions(loadedDimensions, loadedFormat);
             ExportButton.Disabled = false;
         }
         else
@@ -92,21 +113,28 @@ public partial class Editor : Control
             // load as normal, check dimensions
             var existingImage = CubemapTextureButtons.First(btn => btn.HasImageLoaded).CubemapImage;
             var existingDimensions = new Vector2I(existingImage.GetWidth(), existingImage.GetHeight());
+            var existingFormat = existingImage.GetFormat();
             if (!loadedDimensions.Equals(existingDimensions))
             {
-                throw new CubemapLoadImageException("Loaded cubemap size did not match existing size");
+                throw new CubemapLoadImageException(
+                    $"Loaded cubemap size ({loadedDimensions}) did not match existing size ({existingDimensions})");
+            }
+            if (!loadedFormat.Equals(existingFormat))
+            {
+                throw new CubemapLoadImageException(
+                    $"Loaded cubemap format '{loadedFormat}' did not match existing format '{existingFormat}'");
             }
         }
 
         return loadedImage;
     }
 
-    protected void updateImageDimensions(Vector2I dimensions, CubemapTextureButton? existingButton = null)
+    protected void updateImageDimensions(Vector2I dimensions, Image.Format format, CubemapTextureButton? existingButton = null)
     {
         foreach (var btn in CubemapTextureButtons)
         {
             if (btn == existingButton) continue;
-            btn.SetDimensions(dimensions.X, dimensions.Y);
+            btn.SetDimensions(dimensions.X, dimensions.Y, format);
         }
     }
 
@@ -122,7 +150,7 @@ public partial class Editor : Control
         {
             var cubemapTextureDimension = new Vector2I(_cubemap.GetWidth(), _cubemap.GetHeight());
             var image = Image.CreateEmpty(cubemapTextureDimension.X * 2, cubemapTextureDimension.Y * 3, false,
-                Image.Format.Rgba8);
+                _cubemap.GetFormat());
             for (int i = 0; i < 6; i++)
             {
                 var cubemapPart = _cubemap.GetLayerData(i);
@@ -139,6 +167,17 @@ public partial class Editor : Control
         ExportTextureDialog.CurrentPath = _lastTexturePathUsed;
         ExportTextureDialog.FileSelected += exportTexture;
         ExportTextureDialog.PopupCentered();
+    }
+
+    protected void onResetButtonPressed()
+    {
+        foreach (var btn in CubemapTextureButtons)
+        {
+            btn.Reset();
+        }
+        
+        _cubemapPreviewMaterial.SetShaderParameter("cubemap_texture", new Cubemap());
+        ExportButton.Disabled = true;
     }
 
     protected void regenerateCubemap()
