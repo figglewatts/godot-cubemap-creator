@@ -27,7 +27,7 @@ jobs:
           mv /root/.config/godot ~/.config/godot
           mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable.mono ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable.mono
           ls -al ~/.config/godot/
-          cat ~/.config/godot/editor_settings-${GODOT_VERSION:0:3}.tres
+          cat ~/.config/godot/editor_settings-4.tres
           ls -al /opt | grep rcedit
       - name: Windows Build
         run: |
