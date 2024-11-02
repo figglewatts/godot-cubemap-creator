@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://bheslbp6ekw6a"]
+
+[ext_resource type="PackedScene" uid="uid://dtnd2tgqy4e0x" path="res://editor.tscn" id="1_hhf4x"]
+
+[node name="RootScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="editor" parent="." instance=ExtResource("1_hhf4x")]
+layout_mode = 0
+anchors_preset = 0
