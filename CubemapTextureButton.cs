@@ -53,7 +53,10 @@ public partial class CubemapTextureButton : Button
 
     public override void _Ready()
     {
+        GD.Print("CubemapTextureButton _Ready");
         if (Engine.IsEditorHint()) return;
+
+        GD.Print("setting pressed behaviour");
         Pressed += onPressed;
 
         FlipXButton.Disabled = true;
@@ -109,6 +112,7 @@ public partial class CubemapTextureButton : Button
     
     protected void onPressed()
     {
+        GD.Print("emitting OnLoadingTextureStarted");
         EmitSignal(SignalName.OnLoadingTextureStarted, this);
     }
 }
