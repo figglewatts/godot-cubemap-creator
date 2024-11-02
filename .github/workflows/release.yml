@@ -32,6 +32,28 @@ jobs:
           use-dotnet: true
           include-templates: true
 
+      - name: Install Wine
+        run: |
+          sudo dpkg --add-architecture i386
+          wget -qO - https://dl.winehq.org/wine-builds/winehq.key | sudo apt-key add -
+          sudo add-apt-repository ppa:cybermax-dexter/sdl2-backport
+          sudo apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu $(lsb_release -cs) main"
+          sudo apt install --install-recommends winehq-stable
+
+      - name: Install rcedit
+        run: |
+          wget https://github.com/electron/rcedit/releases/download/v2.0.0/rcedit-x64.exe -O /opt/rcedit.exe
+
+      - name: Setup Build
+        run: |
+          mkdir -p ~/.config/godot
+          cat << EOF > ~/.config/godot/editor_settings-4.3.tres
+          [gd_resource type="EditorSettings" format=3]
+          [resource]
+          export/windows/rcedit = "/opt/rcedit.exe"
+          export/windows/wine = "/usr/bin/wine"
+          EOF
+
       - name: Build
         run: |
           OS_TYPE=${{ matrix.platform }}
@@ -48,13 +70,6 @@ jobs:
 
           mkdir -v -p build/${{ matrix.platform }}
           godot --headless --verbose --export-release "${{ matrix.platform }}" "build/${{ matrix.platform }}/$EXPORT_FULL_NAME"
-
-      - name: Set icon on Windows
-        if: matrix.platform == 'windows'
-        run: |
-          sudo apt install imagemagick
-          convert icon.png -define icon:auto-resize=256,128,64,48,32,16 icon.ico
-          godot --headless --verbose -s ReplaceIcon.gd icon.ico build/${{ matrix.platform }}/${EXPORT_NAME}.exe
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
