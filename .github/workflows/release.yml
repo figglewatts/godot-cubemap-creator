@@ -54,9 +54,11 @@ jobs:
         run: |
           wget https://raw.githubusercontent.com/pkowal1982/godoticon/refs/heads/master/CreateIcon.gd -O CreateIcon.gd
           wget https://raw.githubusercontent.com/pkowal1982/godoticon/refs/heads/master/ReplaceIcon.gd -O ReplaceIcon.gd
-          godot --headless --verbose -s CreateIcon.gd icon.ico icon.png
+          godot -s CreateIcon.gd icon.ico icon.png
           ls -al
-          godot --headless --verbose -s ReplaceIcon.gd icon.ico build/${{ matrix.platform }}/${EXPORT_NAME}.exe
+          echo build/${{ matrix.platform }}/${EXPORT_NAME}.exe
+          ls -al build/${{ matrix.platform }}/
+          godot -s ReplaceIcon.gd icon.ico build/${{ matrix.platform }}/${EXPORT_NAME}.exe
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
