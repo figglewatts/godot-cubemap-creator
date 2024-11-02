@@ -5,7 +5,7 @@ env:
   GODOT_VERSION: "4.3"
   EXPORT_NAME: "godot-cubemap-creator"
   PROJECT_PATH: "."
-  WINEPREFIX: "~/wineconfig"
+  WINEPREFIX: "/github/home/wineconfig"
 
 jobs:
   export-windows:
