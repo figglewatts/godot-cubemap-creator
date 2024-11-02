@@ -26,7 +26,12 @@ jobs:
           mkdir -v -p ~/.config/
           mv /root/.config/godot ~/.config/godot
           mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable.mono ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable.mono
-          mv ~/.config/godot/editor_settings-4.tres ~/.config/godot/editor_settings-4.3.tres
+          cat << EOF > ~/.config/godot/editor_settings-4.3.tres
+          [gd_resource type="EditorSettings" format=3]
+          [resource]
+          export/windows/rcedit = "/opt/rcedit.exe"
+          export/windows/wine = "/usr/bin/wine64-stable"
+          EOF
       - name: Windows Build
         run: |
           mkdir -v -p build/windows
