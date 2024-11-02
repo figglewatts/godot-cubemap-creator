@@ -39,7 +39,6 @@ jobs:
           sudo add-apt-repository ppa:cybermax-dexter/sdl2-backport
           sudo apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu $(lsb_release -cs) main"
           sudo apt install --install-recommends winehq-stable
-          which wine
 
       - name: Install rcedit
         run: |
@@ -52,7 +51,7 @@ jobs:
           [gd_resource type="EditorSettings" format=3]
           [resource]
           export/windows/rcedit = "/opt/rcedit.exe"
-          export/windows/wine = "wine"
+          export/windows/wine = "/usr/bin/wine"
           EOF
 
       - name: Build
