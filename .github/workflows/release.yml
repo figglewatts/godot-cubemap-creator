@@ -46,6 +46,7 @@ jobs:
 
       - name: Setup Build
         run: |
+          mkdir -p ~/.config/godot
           cat << EOF > ~/.config/godot/editor_settings-4.3.tres
           [gd_resource type="EditorSettings" format=3]
           [resource]
