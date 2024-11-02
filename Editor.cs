@@ -9,7 +9,7 @@ namespace cubemapcreator;
 public partial class Editor : Control
 {
     [ExportGroup("Views")]
-    [Export] public Array<CubemapTextureButton> CubemapTextureButtons { get; set; } = new();
+    [Export] public Array<CubemapTextureButton> CubemapTextureButtons { get; set; }
     [Export] public Button ExportButton { get; set; }
     [Export] public Button ResetButton { get; set; }
     [Export] public Button FlipXAllButton { get; set; }
