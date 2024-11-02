@@ -138,26 +138,21 @@ text = "Export"
 
 [node name="ExportDialog" type="FileDialog" parent="."]
 title = "Export Cubemap Texture"
-initial_position = 4
 size = Vector2i(500, 500)
 theme = ExtResource("4_tpm43")
 ok_button_text = "Export"
 access = 2
 filters = PackedStringArray("*.png")
-use_native_dialog = true
 
 [node name="OpenTextureDialog" type="FileDialog" parent="."]
 auto_translate_mode = 1
 title = "Open a File"
-initial_position = 4
 size = Vector2i(500, 500)
 theme = ExtResource("4_tpm43")
 ok_button_text = "Open"
 file_mode = 0
 access = 2
-use_native_dialog = true
 
 [node name="ErrorDialog" type="AcceptDialog" parent="."]
 title = "Error"
-initial_position = 4
 size = Vector2i(200, 100)

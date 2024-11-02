@@ -87,6 +87,7 @@ public partial class Editor : Control
             }
         }
 
+        GD.Print("onLoadTexture " + textureButton.CubemapImage);
         LoadTextureDialog.FileSelected += loadTexture;
         LoadTextureDialog.CurrentPath = _lastTexturePathUsed;
         LoadTextureDialog.PopupCentered();
