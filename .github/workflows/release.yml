@@ -5,6 +5,7 @@ env:
   GODOT_VERSION: "4.3"
   EXPORT_NAME: "godot-cubemap-creator"
   PROJECT_PATH: "."
+  WINEPREFIX: "~/wineconfig"
 
 jobs:
   export-windows:
@@ -32,8 +33,6 @@ jobs:
           export/windows/rcedit = "/opt/rcedit.exe"
           export/windows/wine = "/usr/bin/wine64-stable"
           EOF
-          echo 'I am: $(whoami)'
-          echo 'home is $HOME'
       - name: Windows Build
         run: |
           mkdir -v -p build/windows
