@@ -31,7 +31,10 @@ public partial class Editor : Control
     
     public override void _Ready()
     {
-        GD.Print("editor ready");
+        CubemapTextureButtons =
+            new Array<CubemapTextureButton>(GetNode("HSplitContainer/VBoxContainer/AspectRatioContainer/GridContainer")
+                                           .GetChildren()
+                                           .Cast<CubemapTextureButton>());
         foreach (var textureBtn in CubemapTextureButtons)
         {
             textureBtn.OnLoadingTextureStarted += onLoadTexture;
