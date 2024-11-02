@@ -32,16 +32,6 @@ jobs:
           use-dotnet: true
           include-templates: true
 
-      - name: Setup Build
-        run: |
-          mkdir -p ~/.config/godot
-          cat << EOF > ~/.config/godot/editor_settings-4.3.tres
-          [gd_resource type="EditorSettings" format=3]
-          [resource]
-          export/windows/rcedit = "/opt/rcedit.exe"
-          export/windows/wine = "/usr/bin/wine"
-          EOF
-
       - name: Build
         run: |
           OS_TYPE=${{ matrix.platform }}
@@ -65,7 +55,8 @@ jobs:
           wget https://raw.githubusercontent.com/pkowal1982/godoticon/refs/heads/master/CreateIcon.gd -O CreateIcon.gd
           wget https://raw.githubusercontent.com/pkowal1982/godoticon/refs/heads/master/ReplaceIcon.gd -O ReplaceIcon.gd
           godot --headless --verbose -s CreateIcon.gd icon.ico icon.png
-          godot --headless --verbose -s ReplaceIcon.gd icon.ico ${EXPORT_NAME}.exe
+          ls -al
+          godot --headless --verbose -s ReplaceIcon.gd icon.ico build/${{ matrix.platform }}/${EXPORT_NAME}.exe
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
