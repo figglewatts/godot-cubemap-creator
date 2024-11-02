@@ -1,5 +1,8 @@
 name: "Release Application"
-on: push
+
+on:
+  release:
+    types: [ released ]
 
 env:
   EXPORT_NAME: "godot-cubemap-creator"
@@ -32,15 +35,17 @@ jobs:
           use-dotnet: true
           include-templates: true
 
+      # if we're doing a windows build, install wine so we can run rcedit to change the exe icon
       - name: Install Wine
+        if: matrix.platform == 'windows'
         run: |
           sudo dpkg --add-architecture i386
           wget -qO - https://dl.winehq.org/wine-builds/winehq.key | sudo apt-key add -
           sudo add-apt-repository ppa:cybermax-dexter/sdl2-backport
           sudo apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu $(lsb_release -cs) main"
           sudo apt install --install-recommends winehq-stable
-
       - name: Install rcedit
+        if: matrix.platform == 'windows'
         run: |
           wget https://github.com/electron/rcedit/releases/download/v2.0.0/rcedit-x64.exe -O /opt/rcedit.exe
 
@@ -71,8 +76,15 @@ jobs:
           mkdir -v -p build/${{ matrix.platform }}
           godot --headless --verbose --export-release "${{ matrix.platform }}" "build/${{ matrix.platform }}/$EXPORT_FULL_NAME"
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+      - name: Zip build
+        run: |
+          cd build/${{ matrix.platform }}
+          zip -r "${EXPORT_NAME}-${{ github.event.release.tag_name }}-${{ matrix.platform }}.zip" ./*
+
+      - name: Upload build to release
+        uses: softprops/action-gh-release@v2
         with:
-          name: ${{ matrix.platform }}
-          path: build/${{ matrix.platform }}
+          files: |
+            build/${{ matrix.platform }}/${{ env.EXPORT_NAME }}-${{ github.event.release.tag_name }}-${{ matrix.platform }}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
