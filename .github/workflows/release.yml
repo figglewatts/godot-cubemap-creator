@@ -32,6 +32,8 @@ jobs:
           export/windows/rcedit = "/opt/rcedit.exe"
           export/windows/wine = "/usr/bin/wine64-stable"
           EOF
+          echo 'I am: $(whoami)'
+          echo 'home is $HOME'
       - name: Windows Build
         run: |
           mkdir -v -p build/windows
