@@ -5,7 +5,6 @@ env:
   GODOT_VERSION: "4.3"
   EXPORT_NAME: "godot-cubemap-creator"
   PROJECT_PATH: "."
-  WINEPREFIX: "/github/workflow/wineconfig"
 
 jobs:
   export-windows:
@@ -21,6 +20,13 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8'
+      - name: Install Wine
+        run: |
+          sudo dpkg --add-architecture i386
+          wget -qO - https://dl.winehq.org/wine-builds/winehq.key | sudo apt-key add -
+          sudo add-apt-repository ppa:cybermax-dexter/sdl2-backport
+          sudo apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu $(lsb_release -cs) main"
+          sudo apt install --install-recommends winehq-stable
       - name: Setup
         run: |
           mkdir -v -p ~/.local/share/godot/export_templates/
@@ -33,14 +39,11 @@ jobs:
           export/windows/rcedit = "/opt/rcedit.exe"
           export/windows/wine = "/usr/bin/wine64-stable"
           EOF
-          echo "$(whoami)"
-          echo "$HOME"
       - name: Windows Build
         run: |
           mkdir -v -p build/windows
           EXPORT_DIR="$(readlink -f build)"
           cd $PROJECT_PATH
-          ls -al /github
           chown -R root:root /github
           godot --headless --verbose --export-release "Windows Desktop" "$EXPORT_DIR/windows/$EXPORT_NAME.exe"
       - name: Upload Artifact
