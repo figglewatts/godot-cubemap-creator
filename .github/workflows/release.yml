@@ -2,104 +2,55 @@ name: "Release Application"
 on: push
 
 env:
-  GODOT_VERSION: "4.3"
   EXPORT_NAME: "godot-cubemap-creator"
-  PROJECT_PATH: "."
 
 jobs:
-  export-windows:
-    name: Windows Export
+  export:
+    name: Export Platform ${{ matrix.platform }}
     runs-on: ubuntu-20.04
-    container:
-      image: barichello/godot-ci:mono-4.3
+    strategy:
+      matrix:
+        platform: [linux, mac, windows]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           lfs: true
-      - uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8'
-      - name: Setup
-        run: |
-          mkdir -v -p ~/.local/share/godot/export_templates/
-          mkdir -v -p ~/.config/
-          mv /root/.config/godot ~/.config/godot
-          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable.mono ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable.mono
-          cat << EOF > ~/.config/godot/editor_settings-4.3.tres
-          [gd_resource type="EditorSettings" format=3]
-          [resource]
-          export/windows/rcedit = "/opt/rcedit.exe"
-          export/windows/wine = "/usr/bin/wine64-stable"
-          EOF
-          which wineserver
-      - name: Windows Build
-        run: |
-          mkdir -v -p build/windows
-          EXPORT_DIR="$(readlink -f build)"
-          cd $PROJECT_PATH
-          chown -R root:root /github
-          godot --headless --verbose --export-release "Windows Desktop" "$EXPORT_DIR/windows/$EXPORT_NAME.exe"
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: windows
-          path: build/windows
 
-  export-linux:
-    name: Linux Export
-    runs-on: ubuntu-20.04
-    container:
-      image: barichello/godot-ci:mono-4.3
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          lfs: true
       - uses: actions/setup-dotnet@v4
+        name: "Setup Dotnet"
         with:
           dotnet-version: '8'
-      - name: Setup
-        run: |
-          mkdir -v -p ~/.local/share/godot/export_templates/
-          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable.mono ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable.mono
-      - name: Linux Build
-        run: |
-          mkdir -v -p build/linux
-          EXPORT_DIR="$(readlink -f build)"
-          cd $PROJECT_PATH
-          godot --headless --verbose --export-release "Linux" "$EXPORT_DIR/linux/$EXPORT_NAME.x86_64"
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: linux
-          path: build/linux
 
-  export-mac:
-    name: Mac Export
-    runs-on: ubuntu-20.04
-    container:
-      image: barichello/godot-ci:mono-4.3
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Restore Dependencies
+        run: dotnet restore
+
+      - uses: chickensoft-games/setup-godot@v1
+        name: Setup Godot
         with:
-          lfs: true
-      - uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8'
-      - name: Setup
+          version: "4.3.0"
+          use-dotnet: true
+          include-templates: true
+
+      - name: Build
         run: |
-          mkdir -v -p ~/.local/share/godot/export_templates/
-          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable.mono ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable.mono
-      - name: Mac Build
-        run: |
-          mkdir -v -p build/mac
-          EXPORT_DIR="$(readlink -f build)"
-          cd $PROJECT_PATH
-          godot --headless --verbose --export-release "macOS" "$EXPORT_DIR/mac/$EXPORT_NAME.zip"
+          OS_TYPE=${{ matrix.platform }}
+          if [[ "$OS_TYPE" == "linux" ]]; then
+            EXPORT_FULL_NAME="${EXPORT_NAME}.x86_64"
+          elif [[ "$OS_TYPE" == "mac" ]]; then
+            EXPORT_FULL_NAME="${EXPORT_NAME}.zip"
+          elif [[ "$OS_TYPE" == "windows" ]]; then
+            EXPORT_FULL_NAME="${EXPORT_NAME}.exe"
+          else
+            echo "Invalid OS type. Please specify 'linux', 'mac', or 'windows'."
+            exit 1
+          fi
+
+          mkdir -v -p build/${{ matrix.platform }}
+          godot --headless --verbose --export-release "${{ matrix.platform }}" "build/${{ matrix.platform }}/$EXPORT_FULL_NAME"
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: mac
-          path: build/mac
+          name: ${{ matrix.platform }}
+          path: build/${{ matrix.platform }}
