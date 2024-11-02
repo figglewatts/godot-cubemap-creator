@@ -58,7 +58,7 @@ jobs:
           ls -al
           echo build/${{ matrix.platform }}/${EXPORT_NAME}.exe
           ls -al build/${{ matrix.platform }}/
-          godot --headless --verbose -s ReplaceIcon.gd icon.ico build/${{ matrix.platform }}/${EXPORT_NAME}.exe
+          godot --headless --verbose -s ReplaceIcon.gd build/${{ matrix.platform }}/${EXPORT_NAME}.exe
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
