@@ -52,13 +52,10 @@ jobs:
       - name: Set icon on Windows
         if: matrix.platform == 'windows'
         run: |
-          wget https://raw.githubusercontent.com/pkowal1982/godoticon/refs/heads/master/CreateIcon.gd -O CreateIcon.gd
+          sudo apt install imagemagick
+          magick convert icon.png -define icon:auto-resize=256,128,64,48,32,16 icon.ico
           wget https://raw.githubusercontent.com/pkowal1982/godoticon/refs/heads/master/ReplaceIcon.gd -O ReplaceIcon.gd
-          godot --headless --verbose -s CreateIcon.gd icon.ico icon.png
-          ls -al
-          echo build/${{ matrix.platform }}/${EXPORT_NAME}.exe
-          ls -al build/${{ matrix.platform }}/
-          godot --headless --verbose -s ReplaceIcon.gd build/${{ matrix.platform }}/${EXPORT_NAME}.exe
+          godot --headless --verbose -s ReplaceIcon.gd icon.ico build/${{ matrix.platform }}/${EXPORT_NAME}.exe
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
