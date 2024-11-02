@@ -60,7 +60,7 @@ jobs:
           godot --headless --verbose --export-release "${{ matrix.platform }}" "build/${{ matrix.platform }}/$EXPORT_FULL_NAME"
 
       - name: Set icon on Windows
-        if: matrix.platform == "windows"
+        if: matrix.platform == 'windows'
         run: |
           wget https://raw.githubusercontent.com/pkowal1982/godoticon/refs/heads/master/CreateIcon.gd -O CreateIcon.gd
           wget https://raw.githubusercontent.com/pkowal1982/godoticon/refs/heads/master/ReplaceIcon.gd -O ReplaceIcon.gd
