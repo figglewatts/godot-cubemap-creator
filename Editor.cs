@@ -31,6 +31,7 @@ public partial class Editor : Control
     
     public override void _Ready()
     {
+        GD.Print("number of cubemap texture buttons " + CubemapTextureButtons.Count);
         foreach (var textureBtn in CubemapTextureButtons)
         {
             textureBtn.OnLoadingTextureStarted += onLoadTexture;
