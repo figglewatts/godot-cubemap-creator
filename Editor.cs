@@ -31,13 +31,15 @@ public partial class Editor : Control
     
     public override void _Ready()
     {
-        GD.Print("number of cubemap texture buttons " + CubemapTextureButtons.Count);
+        GD.Print("editor ready");
         foreach (var textureBtn in CubemapTextureButtons)
         {
             textureBtn.OnLoadingTextureStarted += onLoadTexture;
             textureBtn.OnTextureChanged += onCubemapTextureChanged;
         }
 
+        CallDeferred(MethodName.printNumberOfButtons);
+        
         ExportButton.Pressed += exportCubemap;
         ExportButton.Disabled = true;
 
@@ -61,6 +63,11 @@ public partial class Editor : Control
         _cubemapPreviewShader = ResourceLoader.Load<Shader>(SHADER_PATH);
         _cubemapPreviewMaterial = new ShaderMaterial { Shader = _cubemapPreviewShader };
         PreviewMeshInstance.SetSurfaceOverrideMaterial(0, _cubemapPreviewMaterial);
+    }
+
+    protected void printNumberOfButtons()
+    {
+        GD.Print("number of cubemap texture buttons " + CubemapTextureButtons.Count);
     }
 
     protected void onCubemapTextureChanged()
