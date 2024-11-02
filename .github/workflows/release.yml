@@ -23,7 +23,7 @@ jobs:
       - name: Install Wine
         run: |
           dpkg --add-architecture i386
-          wget -qO - https://dl.winehq.org/wine-builds/winehq.key | sudo apt-key add -
+          wget -qO - https://dl.winehq.org/wine-builds/winehq.key | apt-key add -
           add-apt-repository ppa:cybermax-dexter/sdl2-backport
           apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu $(lsb_release -cs) main"
           apt install --install-recommends winehq-stable
