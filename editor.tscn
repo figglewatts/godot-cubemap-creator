@@ -144,6 +144,7 @@ theme = ExtResource("4_tpm43")
 ok_button_text = "Export"
 access = 2
 filters = PackedStringArray("*.png")
+use_native_dialog = true
 
 [node name="OpenTextureDialog" type="FileDialog" parent="."]
 auto_translate_mode = 1
@@ -154,6 +155,7 @@ theme = ExtResource("4_tpm43")
 ok_button_text = "Open"
 file_mode = 0
 access = 2
+use_native_dialog = true
 
 [node name="ErrorDialog" type="AcceptDialog" parent="."]
 title = "Error"
