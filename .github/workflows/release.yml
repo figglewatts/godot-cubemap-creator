@@ -4,6 +4,9 @@ on:
   release:
     types: [ released ]
 
+permissions:
+  contents: write
+
 env:
   EXPORT_NAME: "godot-cubemap-creator"
 
